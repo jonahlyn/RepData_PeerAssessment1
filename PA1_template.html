@@ -401,24 +401,24 @@ legend(&quot;topright&quot;, legend = c(&quot;Mean&quot;, &quot;Median&quot;), c
 <p>The same plot with ggplot2.</p>
 
 <pre><code class="r"># Plot with ggplot2
-df2 &lt;- data.frame(x = names(by.day2), y = by.day2)
-m &lt;- ggplot(df2, aes(x = y)) + 
+#df2 &lt;- data.frame(x = names(by.day2), y = by.day2)
+df2 &lt;- aggregate(steps ~ date, data = data2, FUN = sum)
+
+m &lt;- ggplot(df2, aes(x = steps)) + 
   geom_histogram(binwidth = 5000, color = &quot;black&quot;, fill = &quot;grey&quot;) + 
   scale_x_continuous(breaks = seq(0, 25000, 5000), limits = c(0, 25000)) + 
   scale_y_continuous(breaks = seq(0, 40, 5)) + 
   xlab(&quot;Steps Taken&quot;) + 
   ylab(&quot;Days&quot;) + 
   ggtitle(&quot;Total Steps Taken Per Day&quot;) + 
-  geom_vline(aes(xintercept=mean(y)), color=&quot;red&quot;, linetype=&quot;dashed&quot;, size=1) + 
-  geom_vline(aes(xintercept=median(y)))
+  geom_vline(aes(xintercept=mean(steps)), color=&quot;red&quot;, linetype=&quot;dashed&quot;, size=1) + 
+  geom_vline(aes(xintercept=median(steps)))
 
 mytheme &lt;- theme(panel.grid.minor = element_line(colour = &quot;blue&quot;, linetype = &quot;dotted&quot;), 
         plot.margin = unit(c(2,2,2,2), &quot;lines&quot;), 
         plot.title = element_text(vjust = 1.5, size = 14, face = &quot;bold&quot;), 
         axis.title.x = element_text(vjust = -1.2), 
         axis.title.y = element_text(vjust = -0.2))
-
-# How to add a lengend of sorts for the mean and median lines?
 
 print(m + mytheme)
 </code></pre>
