@@ -10,6 +10,7 @@ Include any required libraries.
 ```r
 library("ggplot2")
 library("grid")
+library("reshape2")
 ```
 
 
@@ -83,7 +84,7 @@ Make a histogram of the total number of steps taken each day.
 by.day <- tapply(data$steps, data$date, sum, na.rm = TRUE)
 
 # Plot with base plotting system
-hist(by.day, main = "Total Steps Taken Per Day", xlab = "Steps Taken", ylab = "Days")
+hist(by.day, main = "Total Steps Taken Per Day", xlab = "Total Steps Taken", ylab = "Days")
 rug(by.day)
 abline(v = mean(by.day), col = "red")
 abline(v = median(by.day), lty = 3, lwd = 2)
@@ -155,7 +156,7 @@ Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and 
 by.interval = tapply(data$steps, data$interval, mean, na.rm = TRUE)
 
 # Plot using the base plotting system
-p <- plot(by.interval, type = "l", main = "Average Daily Activity", 
+plot(by.interval, type = "l", main = "Average Daily Activity", 
      xlab = "Interval", ylab = "Average steps taken", xaxt = "n")
 axis(1, 
      at = seq(1, length(by.interval), 60), 
@@ -250,7 +251,7 @@ abline(v = mean(by.day2), col = "red")
 abline(v = median(by.day2), lty = 3, lwd = 2)
 ```
 
-![plot of chunk 2_sum_steps_per_day_base](figure/2_sum_steps_per_day_base.png) 
+![plot of chunk 3_sum_steps_per_day_base](figure/3_sum_steps_per_day_base.png) 
 
 The same plot with ggplot2.
 
@@ -279,7 +280,7 @@ mytheme <- theme(panel.grid.minor = element_line(colour = "blue", linetype = "do
 print(m + mytheme)
 ```
 
-![plot of chunk 2_sum_steps_per_day_ggplot](figure/2_sum_steps_per_day_ggplot.png) 
+![plot of chunk 3_sum_steps_per_day_ggplot](figure/3_sum_steps_per_day_ggplot.png) 
 
 Calculate and report the mean and median total number of steps taken per day. 
 
@@ -302,10 +303,35 @@ median(by.day2)
 
 Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-The mean and the median are now the same and are higher than either value in the original dataset with missing values. There is a higher number of days clustering around the mean/median  with between 10,000 and 15,000 total steps. 
+The mean and the median are now the same and are higher than either value in the original dataset with missing values. There is a higher number of days with between 10,000 and 15,000 total steps clustering around the mean/median. 
 
 
 ## 4. Are there differences in activity patterns between weekdays and weekends?
 
+Using the dataset with the imputed missing values, create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
 
 
+```r
+data2$wtype <- ifelse((weekdays(data2$date) %in% c("Saturday", "Sunday")), "weekend", "weekday")
+data2$wtype <- factor(data2$wtype)
+```
+
+Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
+
+
+```r
+data.melt <- melt(data2, id=c('interval', 'wtype'), measure.vars=c('steps'))
+data.cast <- dcast(data.melt, interval + wtype ~ variable, mean)
+
+g <- ggplot(data.cast, aes(interval, steps, group = "wtype")) + 
+  geom_line() + 
+  facet_wrap("wtype") +
+  scale_x_discrete(breaks = seq(0, 2355, 500), 
+                   labels = gsub("00$", ":00", as.character(seq(0, 2355, 500)))) +
+  xlab("Time Interval") + 
+  ylab("Steps") + 
+  ggtitle("Total Steps By Time Interval")
+print(g)  
+```
+
+![plot of chunk 4_weekdays](figure/4_weekdays.png) 
