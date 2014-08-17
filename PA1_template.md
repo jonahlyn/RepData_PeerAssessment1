@@ -86,15 +86,14 @@ by.day <- tapply(data$steps, data$date, sum, na.rm = TRUE)
 # Plot with base plotting system
 hist(by.day, main = "Total Steps Taken Per Day", xlab = "Total Steps Taken", ylab = "Days")
 rug(by.day)
-abline(v = mean(by.day), col = "red")
+abline(v = mean(by.day), col = "red", lwd = 2)
 abline(v = median(by.day), lty = 3, lwd = 2)
+
+# Add a lengend for the mean and median lines
+legend("topright", legend = c("Mean", "Median"), col=c("red","black"), pch = "-", lwd = c(2), lty = c(1, 3))
 ```
 
 ![plot of chunk 1_sum_steps_per_day_base](figure/1_sum_steps_per_day_base.png) 
-
-```r
-# How to add a lengend of sorts for the mean and median lines?
-```
 
 Here's the same plot using ggplot2.
 
@@ -249,6 +248,9 @@ hist(by.day2, main = "Total Steps Taken Per Day", xlab = "Steps Taken", ylab = "
 rug(by.day2)
 abline(v = mean(by.day2), col = "red")
 abline(v = median(by.day2), lty = 3, lwd = 2)
+
+# Add a legend for the mean and median lines.
+legend("topright", legend = c("Mean", "Median"), col=c("red","black"), pch = "-", lwd = c(2), lty = c(1, 3))
 ```
 
 ![plot of chunk 3_sum_steps_per_day_base](figure/3_sum_steps_per_day_base.png) 
