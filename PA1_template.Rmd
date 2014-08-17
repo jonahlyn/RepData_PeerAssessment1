@@ -228,7 +228,7 @@ data2$wtype <- factor(data2$wtype)
 
 Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
 
-```{r 4_weekdays}
+```{r 4_weekdays, fig.width = 10}
 data.melt <- melt(data2, id=c('interval', 'wtype'), measure.vars=c('steps'))
 data.cast <- dcast(data.melt, interval + wtype ~ variable, mean)
 
